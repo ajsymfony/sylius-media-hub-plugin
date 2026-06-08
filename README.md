@@ -45,106 +45,74 @@ Key design choices:
 
 ## Installation
 
-### Required Host Project Wiring
+This is the exact setup used in the host project.
 
-For the plugin to work in a Sylius application, the host project needs:
+### 1. Add The GitHub Repository To The Main Project
 
-1. The Composer package installed
-2. The bundle registered
-3. The admin routes imported
-4. Cache rebuilt
+If the plugin is not published on Packagist yet, add it as a VCS repository in the main project `composer.json`:
 
-This plugin does not require:
-
-- Doctrine migrations
-- Entity overrides
-- Asset compilation
-- JavaScript SPA setup
-
-### Option A: Install From Packagist Or A VCS Repository
-
-1. Require the package:
-
-```bash
-composer require ajay/sylius-media-hub-plugin
+```json
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ajsymfony/sylius-media-hub-plugin.git"
+    }
+  ]
+}
 ```
 
-2. Register the bundle if Flex does not do it for you:
+### 2. Require The Plugin In The Main Project
+
+Add the package to `require`:
+
+```json
+{
+  "require": {
+    "ajay/sylius-media-hub-plugin": "dev-master"
+  }
+}
+```
+
+Or install it with Composer:
+
+```bash
+composer require ajay/sylius-media-hub-plugin:dev-master
+```
+
+### 3. Register The Bundle
+
+Add the bundle to `config/bundles.php`:
 
 ```php
-// config/bundles.php
 return [
     // ...
     Ajay\SyliusMediaHubPlugin\SyliusMediaHubPlugin::class => ['all' => true],
 ];
 ```
 
-3. Import the admin routes:
+### 4. Import The Admin Routes
+
+Create `config/routes/ajay_sylius_media_hub.yaml`:
 
 ```yaml
-# config/routes/ajay_sylius_media_hub.yaml
 ajay_sylius_media_hub:
     resource: "@SyliusMediaHubPlugin/config/routes/admin.yaml"
     prefix: '/%sylius_admin.path_name%'
 ```
 
-4. Clear cache and rebuild autoload files:
+### 5. Clear Cache
 
 ```bash
-composer dump-autoload
 php bin/console cache:clear
 ```
 
-### Option B: Install As A Local Path Repository During Development
+### Notes
 
-If the plugin source lives outside `vendor/`, for example in `plugins/sylius-media-hub-plugin/` or in a sibling repository, wire it through Composer as a path repository.
-
-Example root `composer.json` changes:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "path",
-      "url": "plugins/sylius-media-hub-plugin",
-      "options": {
-        "symlink": false
-      }
-    }
-  ],
-  "require": {
-    "ajay/sylius-media-hub-plugin": "*@dev"
-  }
-}
-```
-
-Then run:
-
-```bash
-composer update ajay/sylius-media-hub-plugin
-php bin/console cache:clear
-```
-
-`symlink: false` is the safer option in mixed Windows/WSL environments.
-
-### Important Note About `vendor/`
-
-Do not treat `vendor/ajay/sylius-media-hub-plugin` as the source of truth for development.
-
-`vendor/` is Composer-managed install output:
-
-- it can be replaced on install or update
-- changes there are not a reliable distribution workflow
-- it should receive the plugin from Composer, not be hand-maintained as the primary source
-
-The correct source of truth is:
-
-- a separate Git repository for the plugin, or
-- a local path repository outside `vendor/`
-
-### Current Repository State
-
-At runtime, the plugin appears to be autoloaded and the bundle can be registered, but the host project is only properly reproducible if the root `composer.json` also declares the package source and dependency. If that is missing, the next clean Composer install can remove the plugin.
+- Package name stays lowercase: `ajay/sylius-media-hub-plugin`
+- PHP namespace stays capitalized: `Ajay\SyliusMediaHubPlugin`
+- The plugin adds no migrations, entity overrides, or asset build requirements
+- If you update the plugin source, run `composer update ajay/sylius-media-hub-plugin`
 
 ## Plugin Configuration
 

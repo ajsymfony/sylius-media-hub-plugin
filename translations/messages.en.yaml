@@ -1,0 +1,39 @@
+ajay_sylius_media_hub:
+    ui:
+        media_hub: Media Hub
+        subtitle: Manage all product and taxon images from a single screen.
+        total_images: Total Images
+        product_images: Product Images
+        taxon_images: Taxon Images
+        missing_images: Missing Images
+        products_missing_images: Products Missing Images
+        taxons_missing_images: Taxons Missing Images
+        all: All
+        products: Products
+        taxons: Taxons
+        missing: Missing
+        missing_products: Missing Products
+        missing_taxons: Missing Taxons
+        search: Search
+        search_placeholder: Search by product name/code or taxon name/slug
+        sorting: Sort
+        results: Results
+        no_results: No results matched the current filters.
+        no_media: No images matched the current filters.
+        no_media_subtitle: Try widening the search or switching to another media scope.
+        type: Type
+        name: Name
+        code_or_slug: Code or Slug
+        filename: Filename
+        last_update: Last update
+        quick_edit: Quick Edit
+        edit_product: Edit Product
+        edit_taxon: Edit Taxon
+        loading: Loading filtered results...
+        audit_summary: Catalog Image Audit
+        browse_media: Browse Media
+        sort:
+            newest: Newest First
+            oldest: Oldest First
+            name_asc: Name A-Z
+            name_desc: Name Z-A

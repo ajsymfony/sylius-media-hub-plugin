@@ -1,0 +1,67 @@
+<div class="row row-cards mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <a class="card card-link" href="{{ path('ajay_sylius_media_hub_admin_index') }}">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-secondary text-uppercase fw-bold small">{{ 'ajay_sylius_media_hub.ui.total_images'|trans }}</span>
+                    {{ ux_icon('tabler:photo', {'class': 'icon text-primary'}) }}
+                </div>
+                <div class="display-6 fw-bold">{{ statistics.totalImages }}</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a class="card card-link" href="{{ path('ajay_sylius_media_hub_admin_products') }}">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-secondary text-uppercase fw-bold small">{{ 'ajay_sylius_media_hub.ui.product_images'|trans }}</span>
+                    {{ ux_icon('tabler:box', {'class': 'icon text-primary'}) }}
+                </div>
+                <div class="display-6 fw-bold">{{ statistics.productImages }}</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a class="card card-link" href="{{ path('ajay_sylius_media_hub_admin_taxons') }}">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-secondary text-uppercase fw-bold small">{{ 'ajay_sylius_media_hub.ui.taxon_images'|trans }}</span>
+                    {{ ux_icon('tabler:folders', {'class': 'icon text-primary'}) }}
+                </div>
+                <div class="display-6 fw-bold">{{ statistics.taxonImages }}</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a class="card card-link" href="{{ path('ajay_sylius_media_hub_admin_missing') }}">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-secondary text-uppercase fw-bold small">{{ 'ajay_sylius_media_hub.ui.missing_images'|trans }}</span>
+                    {{ ux_icon('tabler:alert-circle', {'class': 'icon text-primary'}) }}
+                </div>
+                <div class="display-6 fw-bold">{{ statistics.missingImages }}</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a class="btn {{ statistics.missingProducts > 0 ? 'btn-outline-warning' : 'btn-outline-success' }}"
+       href="{{ path('ajay_sylius_media_hub_admin_missing', {'missingScope': 'products'}) }}">
+        {{ 'ajay_sylius_media_hub.ui.products_missing_images'|trans }}: {{ statistics.missingProducts }}
+        {% if statistics.missingProducts == 0 %}
+            {{ ux_icon('tabler:check', {'class': 'icon icon-sm ms-1'}) }}
+        {% endif %}
+    </a>
+
+    <a class="btn {{ statistics.missingTaxons > 0 ? 'btn-outline-warning' : 'btn-outline-success' }}"
+       href="{{ path('ajay_sylius_media_hub_admin_missing', {'missingScope': 'taxons'}) }}">
+        {{ 'ajay_sylius_media_hub.ui.taxons_missing_images'|trans }}: {{ statistics.missingTaxons }}
+        {% if statistics.missingTaxons == 0 %}
+            {{ ux_icon('tabler:check', {'class': 'icon icon-sm ms-1'}) }}
+        {% endif %}
+    </a>
+</div>

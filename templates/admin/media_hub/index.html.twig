@@ -1,0 +1,90 @@
+{% extends '@SyliusAdmin/shared/layout/base.html.twig' %}
+
+{% from '@SyliusAdmin/shared/helper/breadcrumbs.html.twig' import breadcrumbs %}
+{% import '@SyliusAdmin/shared/helper/header.html.twig' as header %}
+{% import '@SyliusAdmin/shared/helper/pagination.html.twig' as pagination %}
+
+{% block title %}{{ 'ajay_sylius_media_hub.ui.media_hub'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% include '@SyliusAdmin/shared/crud/common/sidebar.html.twig' %}
+    {% include '@SyliusAdmin/shared/crud/common/navbar.html.twig' %}
+
+    <div class="page-wrapper">
+        {% include '@SyliusAdmin/shared/crud/common/content/flashes.html.twig' %}
+
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                {{ breadcrumbs([
+                    { name: 'sylius.ui.dashboard', url: path('sylius_admin_dashboard'), active: false },
+                    { name: 'ajay_sylius_media_hub.ui.media_hub', active: true },
+                ]) }}
+
+                <div class="row align-items-center mt-3 g-3">
+                    <div class="col-12 col-lg">
+                        {{ header.h1('ajay_sylius_media_hub.ui.media_hub'|trans, 'tabler:photo-search', 'ajay_sylius_media_hub.ui.subtitle'|trans) }}
+                    </div>
+                    <div class="col-12 col-lg-auto">
+                        <div class="text-secondary fw-medium">
+                            {{ 'ajay_sylius_media_hub.ui.audit_summary'|trans }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                {% include '@SyliusMediaHubPlugin/admin/media_hub/_stats.html.twig' with { statistics: statistics } only %}
+                {% include '@SyliusMediaHubPlugin/admin/media_hub/_filters.html.twig' with {
+                    criteria: criteria,
+                    allowed_limits: allowed_limits,
+                    sort_options: sort_options,
+                } only %}
+
+                {% if criteria.isMissingView %}
+                    <div class="card">
+                        <div class="card-body">
+                            {{ sylius_grid_render(missingGrid, '@SyliusMediaHubPlugin/admin/media_hub/grid.html.twig') }}
+                        </div>
+                    </div>
+                {% else %}
+                    {% set items = paginator.currentPageResults %}
+                    {% if items is empty %}
+                        {% include '@SyliusMediaHubPlugin/admin/media_hub/_empty.html.twig' %}
+                    {% else %}
+                        {% include '@SyliusMediaHubPlugin/admin/media_hub/_cards.html.twig' with { items: items } only %}
+                    {% endif %}
+
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mt-4">
+                        <div class="text-secondary">{{ pagination.results_count(paginator) }}</div>
+                        <div class="d-flex align-items-center gap-3">
+                            {{ pagination.number_of_results_selector(paginator, allowed_limits) }}
+                            {{ pagination.simple(paginator) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-media-hub-form]').forEach(function (form) {
+                form.addEventListener('submit', function () {
+                    const indicator = form.querySelector('[data-media-hub-loading]');
+                    if (indicator) {
+                        indicator.classList.remove('d-none');
+                    }
+
+                    form.querySelectorAll('button, select, input').forEach(function (element) {
+                        element.setAttribute('aria-busy', 'true');
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

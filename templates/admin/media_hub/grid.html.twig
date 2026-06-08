@@ -1,0 +1,40 @@
+{% import '@SyliusAdmin/shared/helper/pagination.html.twig' as pagination %}
+
+{% set definition = grid.definition %}
+{% set fields = definition.enabledFields %}
+{% set rows = grid.data %}
+
+{% if rows|length > 0 %}
+    <div class="table-responsive">
+        <table class="table card-table table-vcenter">
+            <thead>
+            <tr>
+                {% for field in fields %}
+                    <th>{{ field.label|trans }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for field in fields %}
+                        <td>{{ sylius_grid_render_field(grid, field, row) }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if rows is iterable and rows.currentPage is defined %}
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mt-4">
+            <div class="text-secondary">{{ pagination.results_count(rows) }}</div>
+            <div class="d-flex align-items-center gap-3">
+                {{ pagination.number_of_results_selector(rows, definition.limits) }}
+                {{ pagination.simple(rows) }}
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    {% include '@SyliusMediaHubPlugin/admin/media_hub/_empty.html.twig' %}
+{% endif %}

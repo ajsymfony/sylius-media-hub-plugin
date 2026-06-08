@@ -1,0 +1,46 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Ajay\SyliusMediaHubPlugin\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,SyliusMediaHubPlugin.php}'
+
+    Ajay\SyliusMediaHubPlugin\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    Ajay\SyliusMediaHubPlugin\Infrastructure\Metadata\CatalogMetadataResolver:
+        arguments:
+            $productClass: '%sylius.model.product.class%'
+            $productImageClass: '%sylius.model.product_image.class%'
+            $taxonClass: '%sylius.model.taxon.class%'
+            $taxonImageClass: '%sylius.model.taxon_image.class%'
+
+    Ajay\SyliusMediaHubPlugin\Infrastructure\Repository\DoctrineMediaHubReadRepository:
+        arguments:
+            $fallbackLocale: '%kernel.default_locale%'
+
+    Ajay\SyliusMediaHubPlugin\Infrastructure\Repository\MediaHubReadRepositoryInterface:
+        alias: Ajay\SyliusMediaHubPlugin\Infrastructure\Repository\DoctrineMediaHubReadRepository
+
+    Ajay\SyliusMediaHubPlugin\Grid\Provider\MissingMediaGridProvider:
+        arguments:
+            $defaultLimit: '%ajay_sylius_media_hub.default_limit%'
+            $allowedLimits: '%ajay_sylius_media_hub.pagination_limits%'
+            $fallbackLocale: '%kernel.default_locale%'
+
+    ajay_sylius_media_hub.grid_provider.missing:
+        alias: Ajay\SyliusMediaHubPlugin\Grid\Provider\MissingMediaGridProvider
+
+    Ajay\SyliusMediaHubPlugin\Controller\MediaHubController:
+        arguments:
+            $defaultLimit: '%ajay_sylius_media_hub.default_limit%'
+            $allowedLimits: '%ajay_sylius_media_hub.pagination_limits%'
+            $fallbackLocale: '%kernel.default_locale%'
+
+    Ajay\SyliusMediaHubPlugin\Menu\AdminMenuListener:
+        tags:
+            - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addMenuItems }

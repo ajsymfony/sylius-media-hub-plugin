@@ -1,0 +1,82 @@
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-xl-row justify-content-between gap-3 mb-3">
+            <div class="nav nav-pills gap-2">
+                <a class="btn {{ criteria.scope == 'all' ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_index') }}">
+                    {{ 'ajay_sylius_media_hub.ui.all'|trans }}
+                </a>
+                <a class="btn {{ criteria.scope == 'products' ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_products') }}">
+                    {{ 'ajay_sylius_media_hub.ui.products'|trans }}
+                </a>
+                <a class="btn {{ criteria.scope == 'taxons' ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_taxons') }}">
+                    {{ 'ajay_sylius_media_hub.ui.taxons'|trans }}
+                </a>
+                <a class="btn {{ criteria.scope == 'missing' ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_missing') }}">
+                    {{ 'ajay_sylius_media_hub.ui.missing'|trans }}
+                </a>
+            </div>
+
+            {% if criteria.isMissingView %}
+                <div class="nav nav-pills gap-2">
+                    <a class="btn {{ criteria.missingScope == 'all' ? 'btn-warning' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_missing') }}">
+                        {{ 'ajay_sylius_media_hub.ui.missing'|trans }}
+                    </a>
+                    <a class="btn {{ criteria.missingScope == 'products' ? 'btn-warning' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_missing', {'missingScope': 'products'}) }}">
+                        {{ 'ajay_sylius_media_hub.ui.missing_products'|trans }}
+                    </a>
+                    <a class="btn {{ criteria.missingScope == 'taxons' ? 'btn-warning' : 'btn-outline-secondary' }}" href="{{ path('ajay_sylius_media_hub_admin_missing', {'missingScope': 'taxons'}) }}">
+                        {{ 'ajay_sylius_media_hub.ui.missing_taxons'|trans }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <form method="get" class="row g-3 align-items-end" data-media-hub-form>
+            {% if criteria.isMissingView %}
+                <input type="hidden" name="missingScope" value="{{ criteria.missingScope }}">
+            {% endif %}
+
+            <div class="col-12 col-lg-7">
+                <label class="form-label" for="media-hub-search">{{ 'ajay_sylius_media_hub.ui.search'|trans }}</label>
+                <input
+                    id="media-hub-search"
+                    type="search"
+                    name="search"
+                    class="form-control"
+                    value="{{ criteria.search }}"
+                    placeholder="{{ 'ajay_sylius_media_hub.ui.search_placeholder'|trans }}"
+                >
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <label class="form-label" for="media-hub-sort">{{ 'ajay_sylius_media_hub.ui.sorting'|trans }}</label>
+                <select id="media-hub-sort" name="sort" class="form-select">
+                    {% for value, label in sort_options %}
+                        <option value="{{ value }}" {{ criteria.sort == value ? 'selected' }}>
+                            {{ label|trans }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-6 col-lg-1">
+                <label class="form-label" for="media-hub-limit">{{ 'sylius.ui.show'|trans }}</label>
+                <select id="media-hub-limit" name="limit" class="form-select">
+                    {% for limit in allowed_limits %}
+                        <option value="{{ limit }}" {{ criteria.limit == limit ? 'selected' }}>{{ limit }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-12 col-lg-2 d-grid">
+                <button type="submit" class="btn btn-primary w-100 text-nowrap">{{ 'ajay_sylius_media_hub.ui.browse_media'|trans }}</button>
+            </div>
+
+            <div class="col-12">
+                <div class="alert alert-info d-none mb-0" data-media-hub-loading>
+                    {{ 'ajay_sylius_media_hub.ui.loading'|trans }}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

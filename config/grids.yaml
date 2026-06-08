@@ -1,0 +1,33 @@
+sylius_grid:
+    grids:
+        ajay_sylius_media_hub_admin_missing:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: '%sylius.model.product.class%'
+            provider: Ajay\SyliusMediaHubPlugin\Grid\Provider\MissingMediaGridProvider
+            limits: [24, 48, 96]
+            fields:
+                mediaKind:
+                    type: twig
+                    label: ajay_sylius_media_hub.ui.type
+                    path: .
+                    options:
+                        template: '@SyliusMediaHubPlugin/admin/media_hub/grid/field/type.html.twig'
+                name:
+                    type: string
+                    label: ajay_sylius_media_hub.ui.name
+                identifier:
+                    type: string
+                    label: ajay_sylius_media_hub.ui.code_or_slug
+                updatedAt:
+                    type: datetime
+                    label: ajay_sylius_media_hub.ui.last_update
+                    options:
+                        format: 'Y-m-d H:i'
+                quickEdit:
+                    type: twig
+                    label: ajay_sylius_media_hub.ui.quick_edit
+                    path: .
+                    options:
+                        template: '@SyliusMediaHubPlugin/admin/media_hub/grid/field/edit.html.twig'

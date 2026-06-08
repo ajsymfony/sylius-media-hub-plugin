@@ -227,3 +227,9 @@ The current implementation intentionally leaves room for future modules such as:
 - Duplicate or unused image detection
 - Large-image and format audits
 - AI-assisted SEO/media enrichment
+## Maintainer
+
+- Ajay
+- Email: `ajayplanet5@gmail.com`
+
+Feedback, suggestions, bug reports, and collaboration inquiries are welcome at `ajayplanet5@gmail.com`.

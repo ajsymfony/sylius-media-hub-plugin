@@ -229,7 +229,7 @@ The current implementation intentionally leaves room for future modules such as:
 - AI-assisted SEO/media enrichment
 ## Maintainer
 
-- Ajay
+- Ajay Singh
 - Email: `ajayplanet5@gmail.com`
 
 Feedback, suggestions, bug reports, and collaboration inquiries are welcome at `ajayplanet5@gmail.com`.

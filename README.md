@@ -74,13 +74,13 @@ Add the package to `require`:
 }
 ```
 
-Or install it with Composer:
+### 3. Install it with Composer:
 
 ```bash
 composer require ajay/sylius-media-hub-plugin:dev-master
 ```
 
-### 3. Register The Bundle
+### 4. Register The Bundle
 
 Add the bundle to `config/bundles.php`:
 
@@ -91,7 +91,7 @@ return [
 ];
 ```
 
-### 4. Import The Admin Routes
+### 5. Import The Admin Routes
 
 Create `config/routes/ajay_sylius_media_hub.yaml`:
 
@@ -101,7 +101,7 @@ ajay_sylius_media_hub:
     prefix: '/%sylius_admin.path_name%'
 ```
 
-### 5. Clear Cache
+### 6. Clear Cache
 
 ```bash
 php bin/console cache:clear

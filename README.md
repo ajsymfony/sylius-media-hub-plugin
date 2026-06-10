@@ -203,6 +203,13 @@ If the menu entry does not appear:
 - verify you are logged in as an administrator
 <img width="1741" height="855" alt="image" src="https://github.com/user-attachments/assets/cbc25e8f-b63e-4f53-82e7-7dafe17f6e8e" />
 
+Search products/taxons by name /slug
+<img width="1079" height="845" alt="image" src="https://github.com/user-attachments/assets/5c88871f-089f-4424-ae4f-ef22de33cfd4" />
+
+# Missing Images
+<img width="1372" height="826" alt="image" src="https://github.com/user-attachments/assets/078972f0-c375-41b9-a24d-03f78c0704ce" />
+
+
 If the route is missing:
 
 - confirm the Media Hub routes are defined in `config/routes/ajay_sylius_media_hub.yaml`

@@ -1,55 +1,55 @@
 # Sylius Media Hub Plugin
 
-Sylius Media Hub is a lightweight Sylius admin plugin that centralizes Product and Taxon image visibility in one place.
+Sylius Media Hub is a Sylius admin plugin for auditing Product and Taxon images from one screen. It is designed for catalog teams who need quick visibility into image coverage, missing assets, and direct navigation back to the standard Sylius edit flows.
 
-Tagline: Manage all Product and Taxon images from a single screen.
+## Scope
 
-## Purpose
+This plugin is intended to be:
 
-This plugin is designed as:
+- a catalog image audit tool
+- a read-only media visibility dashboard
+- a productivity layer for Sylius administrators
 
-- A media visibility tool
-- A catalog image audit tool
-- A productivity tool for Sylius administrators
+It is not intended to be:
 
-This plugin is not a DAM, CMS, image editor, or replacement for Sylius image management.
+- a DAM
+- a CMS
+- an image editor
+- a replacement for native Sylius image management
 
 ## Compatibility
 
-- Sylius `^2.0`
-- Symfony `^6.4 || ^7.0`
 - PHP `^8.2`
+- Symfony `^6.4 || ^7.0`
+- Sylius `^2.0`
 
 ## Features
 
-- Centralized dashboard for Product and Taxon images
-- Statistics cards for total, product, taxon, and missing images
-- Missing-image badges with direct drill-down links
-- Server-side search across product name/code and taxon name/slug
-- Server-side sorting and pagination
-- Dedicated Product, Taxon, and Missing views
-- Direct links back to the standard Sylius Product and Taxon edit pages
-- Read-only catalog auditing with no entity overrides
+- consolidated Product and Taxon image dashboard
+- statistics for total, Product, Taxon, and missing images
+- dedicated Product, Taxon, and Missing views
+- server-side search, sorting, and pagination
+- direct links to native Sylius Product and Taxon edit pages
+- read-only catalog auditing with no entity overrides or schema changes
 
 ## Architecture
 
-The plugin keeps Sylius core image entities untouched and reads from the existing Product, ProductImage, Taxon, and TaxonImage models.
+The plugin reads from existing Sylius catalog models and keeps core image entities untouched.
 
-Key design choices:
+Design principles:
 
-- Read-only DBAL projections for fast list and audit queries
-- No entity decoration or schema changes
-- Native Symfony services and Dependency Injection
-- Native Sylius admin layout and menu integration
-- GridBundle used for the missing-images table
+- no entity overrides
+- no database migrations
+- no frontend asset build step
+- native Symfony service wiring
+- native Sylius admin menu integration
+- Sylius Grid used for the missing-images table
 
 ## Installation
 
-This is the exact setup used in the host project.
+### 1. Add the repository
 
-### 1. Add The GitHub Repository To The Main Project
-
-If the plugin is not published on Packagist yet, add it as a VCS repository in the main project `composer.json`:
+If the package is not yet published on Packagist, add the VCS repository to the host project:
 
 ```json
 {
@@ -62,25 +62,13 @@ If the plugin is not published on Packagist yet, add it as a VCS repository in t
 }
 ```
 
-### 2. Require The Plugin In The Main Project
-
-Add the package to `require`:
-
-```json
-{
-  "require": {
-    "ajay/sylius-media-hub-plugin": "dev-master"
-  }
-}
-```
-
-### 3. Install it with Composer:
+### 2. Require the plugin
 
 ```bash
 composer require ajay/sylius-media-hub-plugin:dev-master
 ```
 
-### 4. Register The Bundle
+### 3. Register the bundle
 
 Add the bundle to `config/bundles.php`:
 
@@ -91,34 +79,62 @@ return [
 ];
 ```
 
-### 5. Import The Admin Routes
+### 4. Add the routes in a dedicated route file
 
 Create `config/routes/ajay_sylius_media_hub.yaml`:
 
 ```yaml
-ajay_sylius_media_hub:
-    resource: "@SyliusMediaHubPlugin/config/routes/admin.yaml"
-    prefix: '/%sylius_admin.path_name%'
+ajay_sylius_media_hub_admin_index:
+    path: /admin/media-hub
+    controller: Ajay\SyliusMediaHubPlugin\Controller\MediaHubController::index
+    methods: [GET]
+
+ajay_sylius_media_hub_admin_products:
+    path: /admin/media-hub/products
+    controller: Ajay\SyliusMediaHubPlugin\Controller\MediaHubController::products
+    methods: [GET]
+
+ajay_sylius_media_hub_admin_taxons:
+    path: /admin/media-hub/taxons
+    controller: Ajay\SyliusMediaHubPlugin\Controller\MediaHubController::taxons
+    methods: [GET]
+
+ajay_sylius_media_hub_admin_missing:
+    path: /admin/media-hub/missing
+    controller: Ajay\SyliusMediaHubPlugin\Controller\MediaHubController::missing
+    methods: [GET]
 ```
 
-### 6. Clear Cache
+### 5. Clear cache
 
 ```bash
 php bin/console cache:clear
 ```
 
-### Notes
+## What the plugin adds
 
-- Package name stays lowercase: `ajay/sylius-media-hub-plugin`
-- PHP namespace stays capitalized: `Ajay\SyliusMediaHubPlugin`
-- The plugin adds no migrations, entity overrides, or asset build requirements
-- If you update the plugin source, run `composer update ajay/sylius-media-hub-plugin`
+- bundle registration in `config/bundles.php`
+- route entries in `config/routes/ajay_sylius_media_hub.yaml`
+- optional configuration in `config/packages/ajay_sylius_media_hub.yaml`
 
-## Plugin Configuration
+## Route design
 
-The plugin works without any required custom configuration.
+The plugin exposes fixed admin routes:
 
-Optional configuration:
+- `/admin/media-hub`
+- `/admin/media-hub/products`
+- `/admin/media-hub/taxons`
+- `/admin/media-hub/missing`
+
+Why this design:
+
+- the Media Hub routes stay isolated from core Sylius admin routes
+- the controller stays free of route attributes
+- it avoids environment-specific prefix issues during route compilation
+
+## Configuration
+
+The plugin works without additional configuration. Optional configuration:
 
 ```yaml
 # config/packages/ajay_sylius_media_hub.yaml
@@ -127,39 +143,28 @@ ajay_sylius_media_hub:
     pagination_limits: [24, 48, 96]
 ```
 
-### Configuration Reference
+Configuration reference:
 
-- `default_limit`
-  Default results per page
-  Must be one of the configured pagination limits
+- `default_limit`: default page size; must be present in `pagination_limits`
+- `pagination_limits`: page sizes offered in the admin UI
 
-- `pagination_limits`
-  Allowed page sizes shown in the admin UI
+## Security
 
-## Security Integration
+- all routes are admin routes
+- access is protected by `ROLE_ADMINISTRATION_ACCESS`
+- the menu entry is added to the Sylius admin Catalog section
+- no extra ACL tables or custom permission schema are introduced
 
-- Routes are meant to be mounted under the existing Sylius admin prefix
-- Access is guarded by `ROLE_ADMINISTRATION_ACCESS`
-- The menu entry is added to the Sylius admin Catalog section
-- No extra ACL schema or permissions table is introduced
+## Verification
 
-## What Gets Added To The Host Project
-
-- Bundle registration in `config/bundles.php`
-- Admin route import in `config/routes/ajay_sylius_media_hub.yaml`
-- Optional configuration in `config/packages/ajay_sylius_media_hub.yaml`
-
-## Verification Checklist
-
-After installation, verify with:
+After installation, confirm:
 
 ```bash
-php bin/console debug:router | grep media-hub
-php bin/console debug:container | grep SyliusMediaHubPlugin
-php bin/console cache:clear
+php bin/console debug:router ajay_sylius_media_hub_admin_index --no-debug
+php bin/console debug:container Ajay\\SyliusMediaHubPlugin\\Controller\\MediaHubController --no-debug
 ```
 
-Expected routes:
+Expected route names:
 
 - `ajay_sylius_media_hub_admin_index`
 - `ajay_sylius_media_hub_admin_products`
@@ -169,26 +174,15 @@ Expected routes:
 Expected UI behavior:
 
 - `Catalog > Media Hub` appears in the admin menu
-- `/admin/media-hub` loads for administrators
-- Product and Taxon edit buttons point to standard Sylius admin edit screens
+- `/admin/media-hub` loads for authenticated administrators
+- Product and Taxon edit actions open standard Sylius admin screens
 
-## Routes
+## Template overrides
 
-- `/admin/media-hub`
-- `/admin/media-hub/products`
-- `/admin/media-hub/taxons`
-- `/admin/media-hub/missing`
-
-## Security
-
-The routes are protected for Sylius administrators and live under the existing admin firewall. The controller also enforces `ROLE_ADMINISTRATION_ACCESS`.
-
-## Template Overrides
-
-If a project wants to customize the plugin UI, override its templates in the host app just like any other Symfony bundle templates:
+To customize the UI from the host app, override templates under:
 
 ```text
-templates/bundles/SyliusMediaHubPlugin/...
+templates/bundles/SyliusMediaHubPlugin/
 ```
 
 ## Testing
@@ -203,33 +197,36 @@ vendor/bin/phpunit -c vendor/ajay/sylius-media-hub-plugin/phpunit.xml.dist
 
 If the menu entry does not appear:
 
-- confirm the bundle is in `config/bundles.php`
-- confirm the admin route import exists
-- clear cache
-- ensure you are logged in as an administrator
-
-If routes are missing:
-
+- confirm the bundle is registered in `config/bundles.php`
 - confirm `config/routes/ajay_sylius_media_hub.yaml` exists
-- run `php bin/console debug:router | grep media-hub`
+- clear cache
+- verify you are logged in as an administrator
 
-If the package disappears after Composer operations:
+If the route is missing:
 
-- the host project is missing a proper root `composer.json` dependency declaration
-- move the plugin source out of `vendor/` and install it through Composer from a path repo, VCS repo, or published package
+- confirm the Media Hub routes are defined in `config/routes/ajay_sylius_media_hub.yaml`
+- run `php bin/console debug:router ajay_sylius_media_hub_admin_index --no-debug`
 
-## Future Extension Points
+If you are redirected to login:
 
-The current implementation intentionally leaves room for future modules such as:
+- make sure you are visiting `/admin/media-hub`, not `/media-hub`
+- verify the current user has `ROLE_ADMINISTRATION_ACCESS`
+- verify the route is registered under `/admin/...`
 
-- Direct image replacement/upload from the gallery
-- Bulk upload and replacement flows
-- Duplicate or unused image detection
-- Large-image and format audits
-- AI-assisted SEO/media enrichment
+If the package is lost after Composer operations:
+
+- ensure the host project keeps `ajay/sylius-media-hub-plugin` in root `composer.json`
+- install the plugin through Composer from a VCS repo, path repo, or published package rather than editing `vendor/` manually
+
+## Future extension points
+
+- inline image replacement or upload flows
+- bulk replacement workflows
+- duplicate or unused image detection
+- large-image and format audits
+- AI-assisted media enrichment
+
 ## Maintainer
 
 - Ajay Singh
-- Email: `ajayplanet5@gmail.com`
-
-Feedback, suggestions, bug reports, and collaboration inquiries are welcome at `ajayplanet5@gmail.com`.
+- `ajayplanet5@gmail.com`

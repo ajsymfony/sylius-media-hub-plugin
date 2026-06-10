@@ -13,7 +13,6 @@ use Sylius\Component\Grid\View\GridViewFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMINISTRATION_ACCESS')]
@@ -32,25 +31,21 @@ final class MediaHubController extends AbstractController
     ) {
     }
 
-    #[Route('/media-hub', name: 'ajay_sylius_media_hub_admin_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         return $this->renderPage($request, MediaHubCriteria::SCOPE_ALL);
     }
 
-    #[Route('/media-hub/products', name: 'ajay_sylius_media_hub_admin_products', methods: ['GET'])]
     public function products(Request $request): Response
     {
         return $this->renderPage($request, MediaHubCriteria::SCOPE_PRODUCTS);
     }
 
-    #[Route('/media-hub/taxons', name: 'ajay_sylius_media_hub_admin_taxons', methods: ['GET'])]
     public function taxons(Request $request): Response
     {
         return $this->renderPage($request, MediaHubCriteria::SCOPE_TAXONS);
     }
 
-    #[Route('/media-hub/missing', name: 'ajay_sylius_media_hub_admin_missing', methods: ['GET'])]
     public function missing(Request $request): Response
     {
         return $this->renderPage($request, MediaHubCriteria::SCOPE_MISSING);

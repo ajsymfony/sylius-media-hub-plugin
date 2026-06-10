@@ -201,6 +201,7 @@ If the menu entry does not appear:
 - confirm `config/routes/ajay_sylius_media_hub.yaml` exists
 - clear cache
 - verify you are logged in as an administrator
+<img width="1741" height="855" alt="image" src="https://github.com/user-attachments/assets/cbc25e8f-b63e-4f53-82e7-7dafe17f6e8e" />
 
 If the route is missing:
 
